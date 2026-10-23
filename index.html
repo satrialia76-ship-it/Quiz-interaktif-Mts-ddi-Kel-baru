@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif Teknologi & AI - MTs DDI Kelurahan Baru</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ddi: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="bg-ddi-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showSection('home')">
+                <div class="w-10 h-10 rounded-full bg-yellow-400 text-ddi-900 flex items-center justify-center font-bold text-xl border-2 border-white shadow">
+                    AI
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">MTs DDI Kelurahan Baru</h1>
+                    <p class="text-xs text-green-200">Quiz Teknologi & Artificial Intelligence</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <span id="role-badge" class="bg-green-700 text-green-100 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-user-graduate"></i> Mode Siswa
+                </span>
+                <button id="btn-toggle-admin" onclick="openAdminAuth()" class="bg-yellow-500 hover:bg-yellow-400 text-ddi-900 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow">
+                    <i class="fa-solid fa-user-shield mr-1"></i> Dashboard Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- 1. DASHBOARD AWAL / HOME -->
+        <section id="section-home" class="space-y-6">
+            <!-- Welcome Banner -->
+            <div class="bg-gradient-to-r from-ddi-800 to-ddi-600 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 space-y-3">
+                    <span class="bg-yellow-400 text-ddi-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Topik: Teknologi & AI
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold leading-snug">
+                        Selamat Datang di Quiz Interaktif <br/>MTs DDI Kelurahan Baru
+                    </h2>
+                    <p class="text-green-100 text-sm md:text-base max-w-xl">
+                        Uji pengetahuanmu seputar perkembangan teknologi modern, komputer, dan kecerdasan buatan (Artificial Intelligence) melalui kuis interaktif ini.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="startQuiz()" class="bg-yellow-400 hover:bg-yellow-300 text-ddi-900 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Mulai Kerjakan Quiz
+                        </button>
+                    </div>
+                </div>
+                <!-- Background Decoration Icon -->
+                <i class="fa-solid fa-microchip absolute -bottom-6 -right-6 text-9xl text-white opacity-10"></i>
+            </div>
+
+            <!-- Stats & Info Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-green-100 text-ddi-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Soal</p>
+                        <p id="total-questions-count" class="text-xl font-bold text-slate-800">5 Soal</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-yellow-100 text-yellow-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Skor Tertinggi</p>
+                        <p id="highest-score" class="text-xl font-bold text-slate-800">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Percobaan Quiz</p>
+                        <p id="quiz-attempts" class="text-xl font-bold text-slate-800">0x SELESAI</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Petunjuk Pengerjaan -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-ddi-600"></i> Petunjuk Pengerjaan Quiz
+                </h3>
+                <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                    <li>Pilihlah jawaban yang paling tepat untuk setiap pertanyaan teknologi & AI.</li>
+                    <li>Jawaban benar/salah <strong>TIDAK AKAN LANGSUNG MUNCUL</strong> saat Anda mengklik opsi pilihan.</li>
+                    <li>Nilai akhir beserta pembahasan kunci jawaban lengkap baru akan muncul setelah Anda menekan tombol <strong>Kirim Semua Jawaban</strong>.</li>
+                    <li>Admin dapat menambah, mengubah, atau menghapus nomor soal melalui panel Dashboard Admin.</li>
+                </ul>
+            </div>
+        </section>
+
+
+        <!-- 2. SECTION QUIZ (SISWA) -->
+        <section id="section-quiz" class="hidden space-y-6">
+            <!-- Progress Bar & Header -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                <div>
+                    <h2 class="font-bold text-slate-800">Quiz Teknologi & AI</h2>
+                    <p class="text-xs text-slate-500">Jawablah seluruh soal dengan teliti.</p>
+                </div>
+                <div class="text-right">
+                    <span id="answered-count-badge" class="bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full border border-slate-300">
+                        0 / 0 Terjawab
+                    </span>
+                </div>
+            </div>
+
+            <!-- Container Soal List -->
+            <div id="quiz-questions-container" class="space-y-6">
+                <!-- Dynamic questions injected here -->
+            </div>
+
+            <!-- Action Submit Button -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                <button onclick="showSection('home')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium text-sm transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Batal / Kembali
+                </button>
+                <button onclick="submitQuiz()" class="bg-ddi-700 hover:bg-ddi-800 text-white font-bold px-6 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Semua Jawaban
+                </button>
+            </div>
+        </section>
+
+
+        <!-- 3. HASIL AKHIR & PEMBAHASAN -->
+        <section id="section-result" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 text-center shadow-lg border border-slate-200 space-y-4">
+                <div id="result-icon-wrapper" class="w-20 h-20 mx-auto rounded-full bg-green-100 text-ddi-700 flex items-center justify-center text-4xl">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Hasil Quiz Teknologi & AI</h2>
+                    <p class="text-sm text-slate-500 mt-1">MTs DDI Kelurahan Baru</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-4 inline-block max-w-sm w-full border border-slate-200">
+                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Nilai / Skor Akhir</p>
+                    <p id="result-score-text" class="text-4xl font-extrabold text-ddi-700 my-1">0 / 100</p>
+                    <p id="result-percentage-text" class="text-xs font-bold text-slate-600">0% Jawaban Benar</p>
+                </div>
+
+                <p id="result-feedback" class="text-sm text-slate-600 max-w-md mx-auto italic">
+                    "Kerja bagus! Terus tingkatkan wawasan teknologi dan AI-mu."
+                </p>
+
+                <div class="pt-2 flex justify-center gap-3">
+                    <button onclick="startQuiz()" class="bg-ddi-700 hover:bg-ddi-800 text-white font-bold px-5 py-2.5 rounded-lg shadow text-sm transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Coba Lagi
+                    </button>
+                    <button onclick="showSection('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-5 py-2.5 rounded-lg text-sm transition">
+                        <i class="fa-solid fa-house mr-1"></i> Beranda
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pembahasan Kunci Jawaban -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b pb-3 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-square-check text-ddi-600"></i> Pembahasan & Kunci Jawaban
+                    </h3>
+                    <span class="text-xs text-slate-500">Kunci jawaban muncul setelah disubmit</span>
+                </div>
+
+                <div id="result-discussion-container" class="space-y-4">
+                    <!-- Dynamic Discussion Rendered Here -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. DASHBOARD ADMIN (MANAGEMENT SOAL) -->
+        <section id="section-admin" class="hidden space-y-6">
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl flex justify-between items-center">
+                <div>
+                    <span class="bg-yellow-500 text-slate-900 text-xs font-bold px-2.5 py-0.5 rounded uppercase">Mode Admin</span>
+                    <h2 class="text-xl font-bold mt-1">Kelola Bank Soal Quiz Teknologi & AI</h2>
+                    <p class="text-slate-400 text-xs mt-0.5">Tambah nomor baru, edit, atau hapus soal quiz.</p>
+                </div>
+                <button onclick="exitAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-700">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar Admin
+                </button>
+            </div>
+
+            <!-- Panel Operasi Admin -->
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex-wrap gap-2">
+                <button onclick="openQuestionModal()" class="bg-ddi-700 hover:bg-ddi-800 text-white text-sm font-bold px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Soal / Nomor Baru
+                </button>
+
+                <button onclick="resetDefaultQuestions()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold px-3 py-2 rounded-lg transition border border-rose-200">
+                    <i class="fa-solid fa-rotate"></i> Reset Ke Soal Default Tech & AI
+                </button>
+            </div>
+
+            <!-- Table / List Admin Soal -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 font-bold text-slate-800 flex justify-between items-center">
+                    <span>Daftar Soal Terpasang</span>
+                    <span id="admin-questions-total-badge" class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-semibold">0 Soal</span>
+                </div>
+                
+                <div id="admin-questions-list" class="divide-y divide-slate-100">
+                    <!-- Dynamic Question Row List -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center text-xs py-4 border-t border-slate-800">
+        <p>&copy; MTs DDI Kelurahan Baru. Seluruh hak cipta dilindungi.</p>
+    </footer>
+
+
+    <!-- MODAL FORM EDIT / TAMBAH SOAL (ADMIN) -->
+    <div id="modal-question" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Tambah Soal Baru</h3>
+                <button onclick="closeQuestionModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="form-question" onsubmit="saveQuestion(event)" class="space-y-4">
+                <input type="hidden" id="input-q-id" value="">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pertanyaan / Teks Soal</label>
+                    <textarea id="input-q-text" rows="3" required class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Tuliskan pertanyaan soal..."></textarea>
+                </div>
+
+                <!-- Opsi Jawaban (A, B, C, D) -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">Pilihan Jawaban</label>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">A.</span>
+                        <input type="text" id="input-opt-0" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi A">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">B.</span>
+                        <input type="text" id="input-opt-1" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi B">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">C.</span>
+                        <input type="text" id="input-opt-2" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi C">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">D.</span>
+                        <input type="text" id="input-opt-3" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi D">
+                    </div>
+                </div>
+
+                <!-- Kunci Jawaban -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kunci Jawaban Benar</label>
+                    <select id="input-correct-opt" required class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-ddi-600 focus:outline-none">
+                        <option value="0">Opsi A</option>
+                        <option value="1">Opsi B</option>
+                        <option value="2">Opsi C</option>
+                        <option value="3">Opsi D</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2 border-t">
+                    <button type="button" onclick="closeQuestionModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-ddi-700 hover:bg-ddi-800 rounded-lg shadow">Simpan Soal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Default 5 Questions: Technology & Artificial Intelligence (AI)
+        const DEFAULT_QUESTIONS = [
+            {
+                id: 1,
+                question: "Apa yang dimaksud dengan Artificial Intelligence (Kecerdasan Buatan)?",
+                options: [
+                    "Komputer yang hanya bisa digunakan untuk mengetik dokumen",
+                    "Simulasi kecerdasan manusia yang diprogram ke dalam sistem mesin atau komputer",
+                    "Jaringan kabel internet berkecepatan tinggi",
+                    "Perangkat keras untuk mendinginkan prosesor"
+                ],
+                correct: 1
+            },
+            {
+                id: 2,
+                question: "Manakah di bawah ini yang merupakan contoh aplikasi berbasis teknologi AI (Natural Language Processing)?",
+                options: [
+                    "ChatGPT",
+                    "Microsoft Excel",
+                    "Adobe Photoshop",
+                    "Kalkulator standar bawaan"
+                ],
+                correct: 0
+            },
+            {
+                id: 3,
+                question: "Apa fungsi utama dari Machine Learning dalam ruang lingkup AI?",
+                options: [
+                    "Mempercepat koneksi jaringan Wi-Fi rumah",
+                    "Menyimpan file dokumen dengan kapasitas besar",
+                    "Membuat komputer dapat belajar secara otomatis dari data tanpa diprogram eksplisit untuk setiap aturan",
+                    "Mengubah sinyal analog menjadi digital"
+                ],
+                correct: 2
+            },
+            {
+id: 4, 
+question: " apa yang dimaksud dengan teknologi cloud computing (komputasi awan?",options: [
+                    "Sistem komputer yang ditempatkan di luar ruangan saat cuaca mendung",
+                    "Penyimpanan dan pengolahan data menggunakan server jarak jauh melalui internet",
+                    "Jaringan satelit cuaca di atmosfer bumi",
+                    "Sistem operasi khusus untuk komputer jinjing"
+                ],
+                correct: 1
+            },
+            {
+                id: 5,
+                question: "Apa arti dari istilah Internet of Things (IoT)?",
+                    options: [
+                    "Jaringan khusus untuk bermain game online secara multiplayer",
+                    "Teknologi layar sentuh pada smartphone modern",
+                    "Konsep di mana berbagai objek sehari-hari terhubung ke internet dan dapat saling bertukar data",
+                    "Sistem keamanan untuk melindungi komputer dari serangan virus"
+                ],
+                correct: 2
+            }
+];
+  // state Variables
+        let questions = [];
+        let userAnswers = {}; 
+        let isAdminLoggedIn = false;
+
+        // On Page Load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestions();
+            updateStatsUI();
+});
+
+        // Load Questions from LocalStorage
+        function loadQuestions() {
+            const stored = localStorage.getItem('mts_ddi_tech_questions');
+            if (stored) {
+                try {
+                    questions = JSON.parse(stored);
+                } catch (e) {
+                    questions = [...DEFAULT_QUESTIONS];
+saveQuestionsToStorage();
+            }
+        }
+on saveQuestionsToStorage() {
+            localStorage.setItem('mts_ddi_tech_questions', JSON.stringify(questions));
+            updateStatsUI();
+        }
+
+        function resetDefaultQuestions() {
+            if (confirm("Apakah Anda ingin mereset bank soal kembali ke 5 soal default Teknologi & AI?")) {
+                questions = [...DEFAULT_QUESTIONS];
+                saveQuestionsToStorage();
+                renderAdminQuestions();
+                alert("Soal berhasil direset!");
+            }
+        }
+
+        // Navigation Controller
+        function showSection(sectionId) {
+            ['section-home', 'section-quiz', 'section-result', '
+Percakapan dengan Gemini
+Buat quiz 5 nomor ada user admin beserta dashboard awal asa tulisan selamat datang di quiz interaktif mts ddi kelurahan baru, hasil nilai akhir setelah klik jawaban tidak langsung muncul jawaban yang benar, di user admin bisa menambah dan menghapus soal/quiz dan biza juga menambah nomor soal
+
+Saya akan membuat aplikasi web Quiz Interaktif MTs DDI Kelurahan Baru lengkap dengan role Siswa dan Admin, manajemen soal CRUD (tambah, edit, hapus, reset) yang tersimpan di LocalStorage, serta sistem scoring yang baru menampilkan jawaban benar setelah quiz diselesaikan.
+
+Saya akan membuat aplikasi ini dalam satu file HTML interaktif dengan Tailwind CSS dan JavaScript.
+
+Quiz Interaktif MTs DDI Kelurahan Baru
+24 Okt, 06.24
+Kodenya nama yg diatas
+
+Saya telah memperbarui dan melengkapi aplikasi Quiz Interaktif MTs DDI Kelurahan Baru dengan semua fitur yang Anda minta, termasuk:
+
+Dashboard / Banner Awal: Pesan ucapan "Selamat Datang di Quiz Interaktif MTs DDI Kelurahan Baru" dengan tampilan modern beraksen hijau islami khas madrasah.
+
+Sistem Multi-Role (Siswa & Admin):
+
+Akses Admin dilindungi dengan sandi (admin123).
+
+Pengalaman Quiz Siswa:
+
+Dimulai dengan 5 soal standar awal (Ke-DDI-an, PAI, & Pengetahuan Umum).
+
+Terdapat Indikator Kemajuan (Progress Bar) pengerjaan soal.
+
+Tanpa Feedback Langsung: Mengklik opsi jawaban hanya memilih pilihan tanpa membocorkan jawaban benar/salah.
+
+Hasil & Pembahasan Akhir: Skor akhir, persentase, status kelulusan, serta pembahasan kunci jawaban lengkap hanya muncul setelah tombol kirim diklik.
+
+Riwayat Skor & Leaderboard: Tersimpan di LocalStorage siswa.
+
+Dashboard Admin Lengkap (Full CRUD):
+
+Menampilkan daftar semua soal.
+
+Fitur Tambah Soal Baru, Edit Soal, dan Hapus Soal.
+
+Fitur Reset Soal kembali ke 5 soal default awal.
+
+Menyimpan seluruh perubahan bank soal di LocalStorage.
+
+Quiz Interaktif MTs DDI Kelurahan Baru
+
+
+
+Kodenya yg diatas
+
+Berikut adalah kode lengkap HTML, CSS, dan JavaScript untuk aplikasi Quiz Interaktif MTs DDI Kelurahan Baru. Anda bisa menyimpan kode di bawah ini dalam satu file bernama index.html dan mengbukanya langsung di browser (seperti Google Chrome, Edge, atau Mozilla Firefox).
+
+HTML
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif MTs DDI Kelurahan Baru</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ddi: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="bg-ddi-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showSection('home')">
+                <div class="w-10 h-10 rounded-full bg-yellow-400 text-ddi-900 flex items-center justify-center font-bold text-xl border-2 border-white shadow">
+                    DDI
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">MTs DDI Kelurahan Baru</h1>
+                    <p class="text-xs text-green-200">Portal Quiz & Pembelajaran Interaktif</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <span id="role-badge" class="bg-green-700 text-green-100 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-user-graduate"></i> Mode Siswa
+                </span>
+                <button id="btn-toggle-admin" onclick="openAdminAuth()" class="bg-yellow-500 hover:bg-yellow-400 text-ddi-900 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow">
+                    <i class="fa-solid fa-user-shield mr-1"></i> Dashboard Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- 1. DASHBOARD AWAL / HOME -->
+        <section id="section-home" class="space-y-6">
+            <!-- Welcome Banner -->
+            <div class="bg-gradient-to-r from-ddi-800 to-ddi-600 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 space-y-3">
+                    <span class="bg-yellow-400 text-ddi-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Aplikasi E-Learning
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold leading-snug">
+                        Selamat Datang di Quiz Interaktif <br/>MTs DDI Kelurahan Baru
+                    </h2>
+                    <p class="text-green-100 text-sm md:text-base max-w-xl">
+                        Uji pemahaman dan wawasan Islam, Ke-DDI-an, serta pengetahuan umummu secara mandiri melalui modul kuis interaktif ini.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="startQuiz()" class="bg-yellow-400 hover:bg-yellow-300 text-ddi-900 font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Mulai Kerjakan Quiz
+                        </button>
+                    </div>
+                </div>
+                <!-- Background Decoration Icon -->
+                <i class="fa-solid fa-book-quran absolute -bottom-6 -right-6 text-9xl text-white opacity-10"></i>
+            </div>
+
+            <!-- Stats & Info Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-green-100 text-ddi-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Soal</p>
+                        <p id="total-questions-count" class="text-xl font-bold text-slate-800">5 Soal</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-yellow-100 text-yellow-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Skor Tertinggi</p>
+                        <p id="highest-score" class="text-xl font-bold text-slate-800">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Percobaan Quiz</p>
+                        <p id="quiz-attempts" class="text-xl font-bold text-slate-800">0x SELESAI</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Petunjuk Pengerjaan -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-ddi-600"></i> Petunjuk Pengerjaan Quiz
+                </h3>
+                <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                    <li>Bacalah setiap pertanyaan dengan cermat sebelum memilih jawaban.</li>
+                    <li>Jawaban benar/salah <strong>TIDAK AKAN LANGSUNG MUNCUL</strong> saat Anda memilih pilihan.</li>
+                    <li>Skor akhir beserta kunci jawaban benar baru akan ditampilkan secara lengkap setelah Anda selesai mengklik tombol <strong>Kirim Semua Jawaban</strong>.</li>
+                    <li>Anda dapat mengulang kuis kapan saja untuk meningkatkan nilai terbaik Anda.</li>
+                </ul>
+            </div>
+        </section>
+
+
+        <!-- 2. SECTION QUIZ (SISWA) -->
+        <section id="section-quiz" class="hidden space-y-6">
+            <!-- Progress Bar & Header -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                <div>
+                    <h2 class="font-bold text-slate-800">Pengerjaan Quiz</h2>
+                    <p class="text-xs text-slate-500">Pilih salah satu jawaban terbaik dari setiap nomor soal.</p>
+                </div>
+                <div class="text-right">
+                    <span id="answered-count-badge" class="bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full border border-slate-300">
+                        0 / 0 Terjawab
+                    </span>
+                </div>
+            </div>
+
+            <!-- Container Soal List -->
+            <div id="quiz-questions-container" class="space-y-6">
+                <!-- Dynamic questions injected here -->
+            </div>
+
+            <!-- Action Submit Button -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                <button onclick="showSection('home')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-medium text-sm transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Batal / Kembali
+                </button>
+                <button onclick="submitQuiz()" class="bg-ddi-700 hover:bg-ddi-800 text-white font-bold px-6 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Semua Jawaban
+                </button>
+            </div>
+        </section>
+
+
+        <!-- 3. HASIL AKHIR & PEMBAHASAN -->
+        <section id="section-result" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 text-center shadow-lg border border-slate-200 space-y-4">
+                <div id="result-icon-wrapper" class="w-20 h-20 mx-auto rounded-full bg-green-100 text-ddi-700 flex items-center justify-center text-4xl">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Hasil Quiz Anda</h2>
+                    <p class="text-sm text-slate-500 mt-1">MTs DDI Kelurahan Baru - Evaluasi Pembelajaran</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-4 inline-block max-w-sm w-full border border-slate-200">
+                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Nilai / Skor Akhir</p>
+                    <p id="result-score-text" class="text-4xl font-extrabold text-ddi-700 my-1">0 / 100</p>
+                    <p id="result-percentage-text" class="text-xs font-bold text-slate-600">0% Jawaban Benar</p>
+                </div>
+
+                <p id="result-feedback" class="text-sm text-slate-600 max-w-md mx-auto italic">
+                    "Kerja bagus! Terus tingkatkan semangat belajarmu."
+                </p>
+
+                <div class="pt-2 flex justify-center gap-3">
+                    <button onclick="startQuiz()" class="bg-ddi-700 hover:bg-ddi-800 text-white font-bold px-5 py-2.5 rounded-lg shadow text-sm transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Coba Lagi
+                    </button>
+                    <button onclick="showSection('home')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-5 py-2.5 rounded-lg text-sm transition">
+                        <i class="fa-solid fa-house mr-1"></i> Beranda
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pembahasan Kunci Jawaban -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b pb-3 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-square-check text-ddi-600"></i> Pembahasan & Kunci Jawaban
+                    </h3>
+                    <span class="text-xs text-slate-500">Jawaban benar baru ditampilkan di sini</span>
+                </div>
+
+                <div id="result-discussion-container" class="space-y-4">
+                    <!-- Dynamic Discussion Rendered Here -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. DASHBOARD ADMIN (MANAGEMENT SOAL) -->
+        <section id="section-admin" class="hidden space-y-6">
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl flex justify-between items-center">
+                <div>
+                    <span class="bg-yellow-500 text-slate-900 text-xs font-bold px-2.5 py-0.5 rounded uppercase">Mode Admin</span>
+                    <h2 class="text-xl font-bold mt-1">Kelola Bank Soal Quiz</h2>
+                    <p class="text-slate-400 text-xs mt-0.5">Tambah, ubah nomor, edit, atau hapus soal quiz MTs DDI Kelurahan Baru.</p>
+                </div>
+                <button onclick="exitAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-700">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar Admin
+                </button>
+            </div>
+
+            <!-- Panel Operasi Admin -->
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex-wrap gap-2">
+                <button onclick="openQuestionModal()" class="bg-ddi-700 hover:bg-ddi-800 text-white text-sm font-bold px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> Tambah Soal / Nomor Baru
+                </button>
+
+                <button onclick="resetDefaultQuestions()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold px-3 py-2 rounded-lg transition border border-rose-200">
+                    <i class="fa-solid fa-rotate"></i> Reset Ke Soal Default
+                </button>
+            </div>
+
+            <!-- Table / List Admin Soal -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 font-bold text-slate-800 flex justify-between items-center">
+                    <span>Daftar Soal Terpasang</span>
+                    <span id="admin-questions-total-badge" class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-semibold">0 Soal</span>
+                </div>
+                
+                <div id="admin-questions-list" class="divide-y divide-slate-100">
+                    <!-- Dynamic Question Row List -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center text-xs py-4 border-t border-slate-800">
+        <p>&copy; MTs DDI Kelurahan Baru. Seluruh hak cipta dilindungi.</p>
+    </footer>
+
+
+    <!-- MODAL FORM EDIT / TAMBAH SOAL (ADMIN) -->
+    <div id="modal-question" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 id="modal-title" class="font-bold text-slate-800 text-lg">Tambah Soal Baru</h3>
+                <button onclick="closeQuestionModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="form-question" onsubmit="saveQuestion(event)" class="space-y-4">
+                <input type="hidden" id="input-q-id" value="">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pertanyaan / Teks Soal</label>
+                    <textarea id="input-q-text" rows="3" required class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Tuliskan pertanyaan soal..."></textarea>
+                </div>
+
+                <!-- Opsi Jawaban (A, B, C, D) -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">Pilihan Jawaban</label>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">A.</span>
+                        <input type="text" id="input-opt-0" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi A">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">B.</span>
+                        <input type="text" id="input-opt-1" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi B">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">C.</span>
+                        <input type="text" id="input-opt-2" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi C">
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <span class="w-6 font-bold text-xs text-slate-500">D.</span>
+                        <input type="text" id="input-opt-3" required class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-ddi-600 focus:outline-none" placeholder="Opsi D">
+                    </div>
+                </div>
+
+                <!-- Kunci Jawaban -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kunci Jawaban Benar</label>
+                    <select id="input-correct-opt" required class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-ddi-600 focus:outline-none">
+                        <option value="0">Opsi A</option>
+                        <option value="1">Opsi B</option>
+                        <option value="2">Opsi C</option>
+                        <option value="3">Opsi D</option>
+                    </select>
+`;
+                });
+
+                qCard.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="bg-ddi-100 text-ddi-800 font-bold text-xs px-2.5 py-1 rounded-md">
+                            Nomor ${index + 1}
+                        </span>
+                    </div>
+                    <p class="font-bold text-slate-800 text-base leading-relaxed">${escapeHtml(q.question)}</p>
+                    <div class="space-y-2 pt-1">
+                        ${optionsHtml}
+                    </div>container.appendChild(qCard);
+            });
+        }
+
+        function selectAnswer(qId, optionIdx) {
+            userAnswers[qId] = optionIdx;
+            updateAnsweredBadge();
+        }
+
+        function updateAnsweredBadge() {
+            const total = questions.length;
+            const answered = Object.keys(userAnswers).length;
+            document.getElementById('answered-count-badge').innerText = `${answered} / ${total} Terjawab`;
+        }}
+
+        function submitQuiz() {
+            const total = questions.length;
+            const answered = Object.keys(userAnswers).length;
+
+            if (answered < total) {
+                if (!confirm(`Anda baru menjawab ${answered} dari ${total} soal. Yakin ingin mengirim sekarang?`)) {
+                    return;
+                }
+            }
+// Calculate Score
+            let correctCount = 0;
+            questions.forEach(q => {
+                if (userAnswers[q.id] !== undefined && userAnswers[q.id] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const finalScore = Math.round((correctCount / total) * 100);
+            
+            let attempts = parseInt(localStorage.getItem('mts_ddi_tech_attempts') || '0') + 1;
+            let highest = parseInt(localStorage.getItem('mts_ddi_tech_highest') || '0');
+            if (finalScore > highest) highest = finalScore;
+
+            localStorage.setItem('mts_ddi_tech_attempts', attempts);
+            localStorage.setItem('mts_ddi_tech_highest', highest);
+            updateStatsUI();
+// Display Results
+            document.getElementById('result-score-text').innerText = `${finalScore} / 100`;
+            document.getElementById('result-percentage-text').innerText = `${correctCount} dari ${total} Soal Benar`;
+
+            const feedbackElem = document.getElementById('result-feedback');
+            if (finalScore >= 80) {
+                feedbackElem.innerText = '"Luar Biasa! Pemahaman teknologi dan AI Anda sangat baik."';
+            } else if (finalScore >= 60) {
+                feedbackElem.innerText = '"Cukup bagus! Periksa kembali pembahasan kunci jawaban di bawah."';
+            } else {
+                feedbackElem.innerText = '"Tetap semangat! Pelajari materi teknologi dan AI lagi ya."';
+            }
+
+            renderDiscussion();
+            showSection('result');
+        }
+         function renderDiscussion() {
+            const container = document.getElementById('result-discussion-container');
+            container.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+
+            questions.forEach((q, index) => {
+                const userSelected = userAnswers[q.id];
+                const isCorrect = userSelected === q.correct;
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${isCorrect ? 'bg-green-50/50 border-green-200' : 'bg-rose-50/50 border-rose-200'} space-y-2`;
+
+                let userAnsText = userSelected !== undefined 
+                    ? `${optionLetters[userSelected]}. ${q.options[userSelected]}` 
+                    : '<em class="text-slate-400">Tidak Dijawab</em>';
+
+                let correctAnsText = `${optionLetters[q.correct]}. ${q.options[q.correct]}`;
+card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-xs px-2 py-0.5 rounded ${isCorrect ? 'bg-green-200 text-green-800' : 'bg-rose-200 text-rose-800'}">
+                            Soal #${index + 1} - ${isCorrect ? 'BENAR' : 'SALAH'}
+                        </span>
+                    </div>
+                    <p class="font-bold text-slate-800 text-sm">${escapeHtml(q.question)}</p>
+                    <div class="text-xs space-y-1 pt-1">
+                        <p class="${isCorrect ? 'text-green-800' : 'text-rose-800 font-semibold'}">
+                            Jawaban Anda: ${escapeHtml(userAnsText)}
+                        </p>
+                        ${!isCorrect ? `<p class="text-green-800 font-semibold">Kunci Jawaban Benar: ${escapeHtml(correctAnsText)}</p>` : ''}
+                    </div>
+`;
+
+                container.appendChild(card);
+            });
+        }
+
+
+        // --- ADMIN MANAGEMENT LOGIC ---
+
+        function openAdminAuth() {
+            if (isAdminLoggedIn) {
+                renderAdminQuestions();
+                showSection('admin');
+                return;
+}
+
+            const password = prompt("Masukkan kata sandi Admin:\n(Sandi Default: admin123)");
+            if (password === 'admin123') {
+                isAdminLoggedIn = true;
+                document.getElementById('role-badge').className = 'bg-yellow-500 text-slate-900 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1';
+                document.getElementById('role-badge').innerHTML = '<i class="fa-solid fa-user-shield"></i> Mode Admin';
+                
+                renderAdminQuestions();
+                showSection('admin');
+            } else if (password !== null) {
+                alert("Kata sandi salah!");
+            }
+        }
+
+        function exitAdmin() {
+            isAdminLoggedIn =In = false;
+            document.getElementById('role-badge').className = 'bg-green-700 text-green-100 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1';
+            document.getElementById('role-badge').innerHTML = '<i class="fa-solid fa-user-graduate"></i> Mode Siswa';
+            showSection('home');
+        }
+
+        function renderAdminQuestions() {
+            const container = document.getElementById('admin-questions-list');
+            document.getElementById('admin-questions-total-badge').innerText = `${questions.length} Soal`;
+            container.innerHTML = '';
+
+            if (questions.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-slate-400 text-sm">
+                        Belum ada soal. Klik <strong>"Tambah Soal Baru"</strong>.
+`;
+                return;
+            }
+
+            const optionLetters = ['A', 'B', 'C', 'D'];
+
+            questions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = "p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition";
+
+                item.innerHTML = `
+                    <div class="space-y-1 flex-grow">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-200 text-slate-700 text-xs font-bold px-2 py-0.5 rounded">
+                                No. ${index + 1}
+                            </span>
+                    </div>
+                `;
+<p class="font-bold text-slate-800 text-sm">${escapeHtml(q.question)}</p>
+                        <p class="text-xs text-slate-500 line-clamp-1">
+                            Pilihan: ${q.options.map((opt, i) => `${optionLetters[i]}. ${escapeHtml(opt)}`).join(' | ')}
+                        </p>
+                    </div>
+
+                    <div
+class="flex items-center gap-2 shrink-0">
+                        <button onclick="editQuestion(${q.id})" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold px-3 py-1.5 rounded-lg border border-blue-200 transition flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button onclick="deleteQuestion(${q.id})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-3 py-1.5 rounded-lg border border-rose-200 transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i> Hapus
+                        </button>
+                    </div>
+`;
+
+                container.appendChild(item);
+            });
+        }
+
+        // Modal Form Handlers
+        function openQuestionModal(qId = null) {
+            document.getElementById('form-question').reset();
+            document.getElementById('input-q-id').value = '';
+
+            if (qId) {
+                const q = questions.find(item => item.id === qId);
+                if (q) {
+                    document.getElementById('modal-title').innerText = `Edit Soal (ID #${q.id})`;
+                    document.getElementById('input-q-id').value = q.id;
+                    document.getElementById('input-q-text').value = q.question;
+                    document.getElementById('input-opt-0').value = q.options[0];
+                    document.getElementById('input-opt-1').value = q.options[1];
+                    document.getElementById('input-opt-2').value = q.options[2];
+                    document.getElementById('input-opt-3').value = q.options[3];
+                    document.getElementById('input-correct-opt').value = q.correct;
+                }
+            } else {
+                document.getElementById('modal-title').innerText = `Tambah Nomor / Soal Baru (Nomor ke-${questions.length + 1})`;
+            }
+document.getElementById('modal-question').classList.remove('hidden');
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('modal-question').classList.add('hidden');
+        }
+
+        function saveQuestion(e) {
+            e.preventDefault();
+
+            const qIdVal = document.getElementById('input-q-id').value;
+            const qText = document.getElementById('input-q-text').value.trim();
+            const opt0 = document.getElementById('input-opt-0').value.trim();
+            const opt1 = document.getElementById('input-opt-1').value.trim();
+            const opt2 = document.getElementById('input-opt-2').value.trim();
+            const opt3 = document.getElementById('input-opt-3').value.trim();
+            const correctOpt = parseInt(document.getElementById('input-correct-opt').value);
+if (qIdVal) {
+                const index = questions.findIndex(q => q.id === parseInt(qIdVal));
+                if (index !== -1) {
+                    questions[index] = {
+                        id: parseInt(qIdVal),
+                        question: qText,
+                        options: [opt0, opt1, opt2, opt3],
+                        correct: correctOpt
+};
+                }
+            } else {
+                const newId = questions.length > 0 ? Math.max(...questions.map(q => q.id)) + 1 : 1;
+                questions.push({
+                    id: newId,
+                    question: qText,
+                    options: [opt0, opt1, opt2, opt3],
+                    correct: correctOpt
+                });
+}
+
+            saveQuestionsToStorage();
+            renderAdminQuestions();
+            closeQuestionModal();
+        }
+
+        function editQuestion(qId) {
+            openQuestionModal(qId);
+        }
+
+        function deleteQuestion(qId) {
+            if (confirm("Apakah Anda yakin ingin menghapus nomor soal ini?")) {
+                questions = questions.filter(q => q.id !== qId);
+                saveQuestionsToStorage();
+                renderAdminQuestions();
+            }
+        }
+function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
+                
