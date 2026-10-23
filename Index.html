@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Interaktif MTs DDI Kel Baru</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col font-sans">
+
+  <!-- NAVBAR -->
+  <header class="bg-emerald-600 text-white p-4 shadow flex justify-between items-center">
+    <h1 class="font-bold text-lg cursor-pointer" onclick="show('home')">Quiz MTs DDI Kel Baru</h1>
+    <div class="space-x-2">
+      <button onclick="show('home')" class="text-sm bg-emerald-700 px-3 py-1 rounded">Beranda</button>
+      <button onclick="loginAdmin()" class="text-sm bg-emerald-800 px-3 py-1 rounded">Admin</button>
+    </div>
+  </header>
+
+  <main class="max-w-xl w-full mx-auto p-4 flex-grow">
+
+    <!-- 1. BERANDA -->
+    <section id="view-home" class="bg-white p-6 rounded-xl shadow space-y-4 text-center">
+      <h2 class="text-2xl font-bold text-emerald-700">Selamat datang di Quiz Interaktif MTs DDI Kel Baru</h2>
+      <p class="text-sm text-slate-600">Uji kemampuanmu seputar Teknologi dan AI!</p>
+      <div class="pt-2">
+        <button onclick="show('reg')" class="bg-emerald-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-emerald-700">Mulai Quiz</button>
+      </div>
+    </section>
+
+    <!-- 2. REGISTRASI -->
+    <section id="view-reg" class="hidden bg-white p-6 rounded-xl shadow space-y-4">
+      <h3 class="font-bold text-lg">Identitas Peserta</h3>
+      <input type="text" id="p-name" placeholder="Nama Lengkap" class="w-full border p-2 rounded text-sm">
+      <input type="text" id="p-class" placeholder="Kelas" class="w-full border p-2 rounded text-sm">
+      <button onclick="startQuiz()" class="w-full bg-emerald-600 text-white font-bold py-2 rounded">Mulai Kerjakan</button>
+    </section>
+
+    <!-- 3. LEMBAR SOAL -->
+    <section id="view-quiz" class="hidden bg-white p-6 rounded-xl shadow space-y-4">
+      <div class="flex justify-between text-xs text-slate-500 font-bold border-b pb-2">
+        <span id="q-user"></span>
+        <span id="q-num"></span>
+      </div>
+      <h3 id="q-text" class="font-bold text-base md:text-lg"></h3>
+      <div id="q-opts" class="space-y-2"></div>
+      <div class="flex justify-between pt-4 border-t">
+        <button id="btn-prev" onclick="move(-1)" class="px-4 py-1.5 border rounded text-sm">Sebelumnya</button>
+        <button id="btn-next" onclick="move(1)" class="px-4 py-1.5 bg-emerald-600 text-white rounded text-sm">Selanjutnya</button>
+      </div>
+    </section>
+
+    <!-- 4. HASIL -->
+    <section id="view-res" class="hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl shadow text-center space-y-2">
+        <h2 class="text-xl font-bold">Hasil Quiz</h2>
+        <div id="res-score" class="text-4xl font-extrabold text-emerald-600">0</div>
+        <p id="res-detail" class="text-sm text-slate-500"></p>
+        <button onclick="show('home')" class="bg-emerald-600 text-white text-sm px-4 py-2 rounded mt-2">Kembali ke Beranda</button>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow space-y-3">
+        <h3 class="font-bold text-base border-b pb-2">Review & Pembahasan</h3>
+        <div id="res-review" class="space-y-3 text-sm"></div>
+      </div>
+    </section>
+
+    <!-- 5. DASBOR ADMIN -->
+    <section id="view-admin" class="hidden bg-white p-6 rounded-xl shadow space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-lg">Kelola Soal Admin</h3>
+        <button onclick="openForm()" class="bg-emerald-600 text-white text-xs px-3 py-1.5 rounded">+ Tambah Soal</button>
+      </div>
+      <div id="admin-list" class="space-y-2 divide-y"></div>
+    </section>
+
+  </main>
+
+  <!-- MODAL FORM SOAL (ADMIN) -->
+  <div id="modal-q" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4">
+    <div class="bg-white p-5 rounded-xl w-full max-w-md space-y-3">
+      <h3 class="font-bold border-b pb-2" id="modal-title">Form Soal</h3>
+      <input type="hidden" id="form-id">
+      <textarea id="f-text" placeholder="Teks Soal" class="w-full border p-2 text-sm rounded" rows="2"></textarea>
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="f-a" placeholder="Opsi A" class="border p-2 text-sm rounded">
+        <input type="text" id="f-b" placeholder="Opsi B" class="border p-2 text-sm rounded">
+        <input type="text" id="f-c" placeholder="Opsi C" class="border p-2 text-sm rounded">
+        <input type="text" id="f-d" placeholder="Opsi D" class="border p-2 text-sm rounded">
+      </div>
+      <select id="f-key" class="w-full border p-2 text-sm rounded">
+        <option value="A">Kunci: A</option>
+        <option value="B">Kunci: B</option>
+        <option value="C">Kunci: C</option>
+        <option value="D">Kunci: D</option>
+      </select>
+      <textarea id="f-exp" placeholder="Pembahasan Singkat" class="w-full border p-2 text-sm rounded" rows="2"></textarea>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeForm()" class="px-3 py-1 text-sm border rounded">Batal</button>
+        <button onclick="saveQ()" class="px-3 py-1 text-sm bg-emerald-600 text-white rounded">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_Q = [
+      { id: "q1", text: "Apa kepanjangan dari AI?", opts: {A:"Automatic Internet", B:"Artificial Intelligence", C:"Advanced Input", D:"All Information"}, key: "B", exp: "AI singkatan dari Artificial Intelligence." },
+      { id: "q2", text: "Manakah contoh kecerdasan buatan (AI)?", opts: {A:"Buku tulis", B:"Penggaris", C:"ChatGPT", D:"Meja belajar"}, key: "C", exp: "ChatGPT adalah contoh teknologi AI." },
+      { id: "q3", text: "Apa fungsi utama internet?", opts: {A:"Memasak makanan", B:"Mencuci pakaian", C:"Menyiram tanaman", D:"Menghubungkan perangkat dan mencari informasi"}, key: "D", exp: "Internet berfungsi untuk jaringan informasi." },
+      { id: "q4", text: "Manakah yang termasuk perangkat keras komputer?", opts: {A:"Keyboard", B:"Microsoft Word", C:"Google Chrome", D:"Windows"}, key: "A", exp: "Keyboard adalah perangkat keras (hardware)." },
+      { id: "q5", text: "Mengapa kita harus memeriksa kebenaran informasi dari AI?", opts: {A:"Agar cepat selesai", B:"Agar tidak menyebarkan informasi yang salah", C:"Agar komputer lebih besar", D:"Agar internet lebih cepat"}, key: "B", exp: "Agar tidak menyebarkan berita salah/hoax." }
+    ];
+
+    let questions = JSON.parse(localStorage.getItem('mts_q')) || DEFAULT_Q;
+    let answers = {}, curIdx = 0, user = {};
+
+    function show(v) {
+      ['home', 'reg', 'quiz', 'res', 'admin'].forEach(x => document.getElementById(`view-${x}`).classList.add('hidden'));
+      document.getElementById(`view-${v}`).classList.remove('hidden');
+    }
+
+    function startQuiz() {
+      const name = document.getElementById('p-name').value;
+      const cls = document.getElementById('p-class').value;
+      if(!name || !cls) return alert("Isi nama dan kelas!");
+      user = { name, cls };
+      answers = {}; curIdx = 0;
+      show('quiz');
+      renderQ();
+    }
+
+    function renderQ() {
+      const q = questions[curIdx];
+      document.getElementById('q-user').innerText = `${user.name} (${user.cls})`;
+      document.getElementById('q-num').innerText = `Soal ${curIdx + 1} / ${questions.length}`;
+      document.getElementById('q-text').innerText = `${curIdx + 1}. ${q.text}`;
+      
+      const container = document.getElementById('q-opts');
+      container.innerHTML = '';
+      Object.entries(q.opts).forEach(([k, v]) => {
+        const sel = answers[q.id] === k;
+        container.innerHTML += `
+          <button onclick="setAns('${q.id}','${k}')" class="w-full text-left p-3 rounded border ${sel ? 'border-emerald-600 bg-emerald-50 font-bold' : 'bg-slate-50'}">
+            ${k}. ${v}
+          </button>`;
+      });
+
+      document.getElementById('btn-prev').disabled = curIdx === 0;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.innerText = curIdx === questions.length - 1 ? 'Selesai' : 'Selanjutnya';
+    }
+
+    function setAns(qid, k) { answers[qid] = k; renderQ(); }
+
+    function move(step) {
+      curIdx += step;
+      if(curIdx >= questions.length) finish();
+      else renderQ();
+    }
+
+    function finish() {
+      let correct = 0;
+      questions.forEach(q => { if(answers[q.id] === q.key) correct++; });
+      const score = Math.round((correct / questions.length) * 100);
+      
+      document.getElementById('res-score').innerText = score;
+      document.getElementById('res-detail').innerText = `Benar ${correct} dari ${questions.length} soal`;
+
+      const rev = document.getElementById('res-review');
+      rev.innerHTML = '';
+      questions.forEach((q, i) => {
+        const u = answers[q.id];
+        const isOk = u === q.key;
+        rev.innerHTML += `
+          <div class="p-3 border rounded ${isOk ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}">
+            <p class="font-bold">${i+1}. ${q.text}</p>
+            <p class="text-xs ${isOk ? 'text-emerald-700' : 'text-red-700'}">Jawaban Anda: ${u ? u + '. ' + q.opts[u] : 'Tidak dijawab'}</p>
+            ${!isOk ? `<p class="text-xs text-emerald-700 font-semibold">Kunci: ${q.key}. ${q.opts[q.key]}</p>` : ''}
+            ${q.exp ? `<p class="text-xs text-slate-500 mt-1">Pembahasan: ${q.exp}</p>` : ''}
+          </div>`;
+      });
+      show('res');
+    }
+
+    // ADMIN
+    function loginAdmin() {
+      if(prompt("Password Admin:") === "admin") {
+        renderAdmin();
+        show('admin');
+      } else {
+        alert("Password salah!");
+      }
+    }
+
+    function renderAdmin() {
+      const list = document.getElementById('admin-list');
+      list.innerHTML = '';
+      questions.forEach((q, i) => {
+        list.innerHTML += `
+          <div class="pt-2 flex justify-between items-center">
+            <div>
+              <p class="font-bold text-xs">Soal #${i+1} (Kunci: ${q.key})</p>
+              <p class="text-sm">${q.text}</p>
+            </div>
+            <div class="space-x-1">
+              <button onclick="openForm('${q.id}')" class="text-xs bg-slate-200 px-2 py-1 rounded">Edit</button>
+              <button onclick="delQ('${q.id}')" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">Hapus</button>
+            </div>
+          </div>`;
+      });
+    }
+
+    function openForm(id = null) {
+      document.getElementById('form-id').value = id || '';
+      if(id) {
+        const q = questions.find(x => x.id === id);
+        document.getElementById('modal-title').innerText = "Edit Soal";
+        document.getElementById('f-text').value = q.text;
+        document.getElementById('f-a').value = q.opts.A;
+        document.getElementById('f-b').value = q.opts.B;
+        document.getElementById('f-c').value = q.opts.C;
+        document.getElementById('f-d').value = q.opts.D;
+        document.getElementById('f-key').value = q.key;
+        document.getElementById('f-exp').value = q.exp;
+      } else {
+        document.getElementById('modal-title').innerText = `Tambah Soal #${questions.length + 1}`;
+        ['f-text','f-a','f-b','f-c','f-d','f-exp'].forEach(x => document.getElementById(x).value = '');
+        document.getElementById('f-key').value = 'A';
+      }
+      document.getElementById('modal-q').classList.remove('hidden');
+    }
+
+    function closeForm() { document.getElementById('modal-q').classList.add('hidden'); }
+
+    function saveQ() {
+      const id = document.getElementById('form-id').value;
+      const newQ = {
+        id: id || 'q_' + Date.now(),
+        text: document.getElementById('f-text').value,
+        opts: {
+          A: document.getElementById('f-a').value,
+          B: document.getElementById('f-b').value,
+          C: document.getElementById('f-c').value,
+          D: document.getElementById('f-d').value
+        },
+        key: document.getElementById('f-key').value,
+        exp: document.getElementById('f-exp').value
+      };
+
+      if(id) {
+        const idx = questions.findIndex(x => x.id === id);
+        questions[idx] = newQ;
+      } else {
+        questions.push(newQ);
+      }
+
+      localStorage.setItem('mts_q', JSON.stringify(questions));
+      closeForm();
+      renderAdmin();
+    }
+
+    function delQ(id) {
+      if(confirm("Hapus soal ini?")) {
+        questions = questions.filter(x => x.id !== id);
+        localStorage.setItem('mts_q', JSON.stringify(questions));
+        renderAdmin();
+      }
+    }
+  </script>
+</body>
+</html>
