@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif - MTs DDI Kel Baru</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-emerald-600 text-white shadow-md">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showView('home')">
+                <div class="bg-white p-2 rounded-lg text-emerald-600">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Quiz Interaktif</h1>
+                    <p class="text-xs text-emerald-100">MTs DDI Kel Baru</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="showView('home')" class="px-3 py-1.5 rounded-md hover:bg-emerald-700 text-sm font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-house"></i> Beranda
+                </button>
+                <button onclick="showAdminLogin()" class="px-3 py-1.5 bg-emerald-800 hover:bg-emerald-900 rounded-md text-sm font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-user-gear"></i> Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6">
+
+        <!-- VIEW 1: HOME / DASHBOARD AWAL -->
+        <section id="view-home" class="space-y-6">
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 md:p-10 text-white shadow-lg text-center md:text-left relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-emerald-500/40 text-emerald-100 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
+                        Portal Media Pembelajaran
+                    </span>
+                    <h2 class="text-2xl md:text-4xl font-bold mt-3 mb-2 leading-snug">
+                        Selamat Datang di Quiz Interaktif MTs DDI Kel Baru
+                    </h2>
+                    <p class="text-emerald-100 text-sm md:text-base mb-6">
+                        Uji pengetahuanmu seputar Teknologi dan Kecerdasan Buatan (AI) di sini!
+                    </p>
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                        <button onclick="startQuizFlow()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold px-6 py-3 rounded-xl shadow-md transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Mulai Kerjakan Quiz
+                        </button>
+                        <button onclick="showAdminLogin()" class="bg-white/10 hover:bg-white/20 text-white font-medium px-5 py-3 rounded-xl border border-white/20 transition flex items-center gap-2">
+                            <i class="fa-solid fa-lock"></i> Dasbor Admin
+                        </button>
+                    </div>
+                </div>
+                <i class="fa-solid fa-brain absolute right-[-20px] bottom-[-20px] text-9xl text-white/10 pointer-events-none hidden md:block"></i>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4">
+                    <div class="bg-emerald-100 text-emerald-600 p-3 rounded-lg"><i class="fa-solid fa-list-check text-xl"></i></div>
+                    <div>
+                        <h3 class="font-semibold text-slate-800" id="stat-total-q">5 Soal</h3>
+                        <p class="text-xs text-slate-500">Materi Teknologi & AI</p>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4">
+                    <div class="bg-amber-100 text-amber-600 p-3 rounded-lg"><i class="fa-solid fa-clock-rotate-left text-xl"></i></div>
+                    <div>
+                        <h3 class="font-semibold text-slate-800">Evaluasi Akhir</h3>
+                        <p class="text-xs text-slate-500">Jawaban benar muncul di akhir</p>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4">
+                    <div class="bg-blue-100 text-blue-600 p-3 rounded-lg"><i class="fa-solid fa-laptop-code text-xl"></i></div>
+                    <div>
+                        <h3 class="font-semibold text-slate-800">Flexibel</h3>
+                        <p class="text-xs text-slate-500">Dapat diakses di HP & Komputer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: REGISTRASI PESERTA -->
+        <section id="view-register" class="hidden max-w-md mx-auto">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
+                <h3 class="text-xl font-bold text-slate-800 mb-1">Identitas Peserta</h3>
+                <p class="text-xs text-slate-500 mb-4">Masukkan nama Anda sebelum memulai quiz.</p>
+                <form id="form-register" onsubmit="handleStartQuiz(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="participant-name" required placeholder="Contoh: Ahmad Rizky" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Kelas</label>
+                        <input type="text" id="participant-class" required placeholder="Contoh: VII A / IX B" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button type="button" onclick="showView('home')" class="w-1/3 py-2.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 font-medium text-sm transition">Batal</button>
+                        <button type="submit" class="w-2/3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm shadow transition">Mulai Quiz</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 3: LEMBAR QUIZ -->
+        <section id="view-quiz" class="hidden space-y-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <p class="text-xs text-slate-400">Peserta:</p>
+                    <p class="font-semibold text-slate-700 text-sm" id="quiz-student-info">Ahmad (VII A)</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full" id="quiz-progress-text">Soal 1 dari 5</span>
+                </div>
+            </div>
+
+            <!-- Kartu Soal -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-md">
+                <div class="mb-4">
+                    <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Pertanyaan</span>
+                    <h3 class="text-lg md:text-xl font-semibold text-slate-800 mt-1" id="question-text">Loading...</h3>
+                </div>
+
+                <div class="space-y-3 my-6" id="options-container">
+                    <!-- Opsi Jawaban dirender secara dinamis -->
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                    <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-left text-xs"></i> Sebelumnya
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm shadow flex items-center gap-1">
+                        Selanjutnya <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: HASIL QUIZ -->
+        <section id="view-result" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-md text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full mb-3 text-3xl" id="result-icon">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Quiz Selesai!</h2>
+                <p class="text-sm text-slate-500 mb-4" id="result-user-name">Hasil Evaluasi</p>
+
+                <div class="max-w-xs mx-auto bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+                    <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Skor Akhir Anda</p>
+                    <div class="text-4xl font-extrabold text-emerald-600" id="result-score-num">0 / 100</div>
+                    <p class="text-xs text-slate-400 mt-1" id="result-accuracy-text">0 dari 0 soal dijawab benar</p>
+                </div>
+
+                <div class="flex justify-center gap-3">
+                    <button onclick="startQuizFlow()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow transition">
+                        Ulangi Quiz
+                    </button>
+                    <button onclick="showView('home')" class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-lg text-sm font-medium transition">
+                        Kembali ke Beranda
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pembahasan Jawaban -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-emerald-600"></i> Review Jawaban & Pembahasan
+                </h3>
+                <div class="space-y-4" id="review-container">
+                    <!-- Pembahasan Soal dimasukkan dinamis lewat JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: DASHBOARD ADMIN -->
+        <section id="view-admin" class="hidden space-y-6">
+            <div class="flex flex-wrap justify-between items-center gap-3 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800">Dasbor Admin Quiz</h2>
+                    <p class="text-xs text-slate-500">Kelola bank soal untuk MTs DDI Kel Baru</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openQuestionModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Tambah Soal Baru
+                    </button>
+                    <button onclick="resetDefaultQuestions()" class="px-3 py-2 border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg text-xs font-medium">
+                        Reset Soal Bawaan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Daftar Soal Admin -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">Daftar Soal Saat Ini</h3>
+                    <span class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full" id="admin-q-count">5 Soal</span>
+                </div>
+                <div class="divide-y divide-slate-100" id="admin-questions-list">
+                    <!-- Daftar Soal Admin Rendered via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="modal-admin-login" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Login Admin</h3>
+            <p class="text-xs text-slate-500 mb-4">Masukkan kata sandi admin (Default: <code class="bg-slate-100 px-1 py-0.5 rounded text-emerald-600 font-mono">admin</code>)</p>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="admin-pass" required placeholder="Password Admin" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm">
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeAdminLogin()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Masuk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH/EDIT SOAL -->
+    <div id="modal-question" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+            <h3 class="text-lg font-bold text-slate-800 mb-3" id="modal-q-title">Tambah Soal Baru</h3>
+            <form id="form-question" onsubmit="saveQuestion(event)" class="space-y-3">
+                <input type="hidden" id="q-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Pertanyaan / Teks Soal</label>
+                    <textarea id="q-text" required rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Opsi A</label>
+                        <input type="text" id="q-opt-a" required class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Opsi B</label>
+                        <input type="text" id="q-opt-b" required class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Opsi C</label>
+                        <input type="text" id="q-opt-c" required class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Opsi D</label>
+                        <input type="text" id="q-opt-d" required class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kunci Jawaban Benar</label>
+                    <select id="q-key" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Penjelasan / Pembahasan (Opsional)</label>
+                    <textarea id="q-exp" rows="2" placeholder="Mengapa jawaban ini benar?" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeQuestionModal()" class="px-4 py-2 text-sm border border-slate-300 rounded-lg text-slate-600">Batal</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow">Simpan Soal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT -->
+    <script>
+        // 1. DATA DEFAULT SOAL
+        const DEFAULT_QUESTIONS = [
+            {
+                id: "q1",
+                question: "Apa kepanjangan dari AI?",
+                options: { A: "Automatic Internet", B: "Artificial Intelligence", C: "Advanced Input", D: "All Information" },
+                correctKey: "B",
+                explanation: "AI singkatan dari Artificial Intelligence (Kecerdasan Buatan)."
+            },
+            {
+                id: "q2",
+                question: "Manakah contoh kecerdasan buatan (AI)?",
+                options: { A: "Buku tulis", B: "Penggaris", C: "ChatGPT", D: "Meja belajar" },
+                correctKey: "C",
+                explanation: "ChatGPT adalah model bahasa berbasis Artificial Intelligence yang dapat merespons percakapan manusia."
+            },
+            {
+                id: "q3",
+                question: "Apa fungsi utama internet?",
+                options: { A: "Memasak makanan", B: "Mencuci pakaian", C: "Menyiram tanaman", D: "Menghubungkan perangkat dan mencari informasi" },
+                correctKey: "D",
+                explanation: "Internet adalah jaringan komputer global yang menghubungkan berbagai perangkat untuk berkomunikasi dan berbagi informasi."
+            },
+            {
+                id: "q4",
+                question: "Manakah yang termasuk perangkat keras komputer?",
+                options: { A: "Keyboard", B: "Microsoft Word",
